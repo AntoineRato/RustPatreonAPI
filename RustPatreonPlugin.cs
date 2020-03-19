@@ -34,7 +34,7 @@ namespace Oxide.Plugins
             Puts("Debug OnServerInitialized");
         }
 
-        private void PatreonCommand(IPlayer player, string command, string[] args)
+        public void PatreonCommand(IPlayer player, string command, string[] args)
         {
             //if (args.Length < 1)
             Puts("Debug PatreonCommand");
