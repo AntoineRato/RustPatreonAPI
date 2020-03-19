@@ -1,0 +1,16 @@
+
+.DS_Store
+
+RustPatreonAPI.csproj
+
+RustPatreonAPI.sln
+
+.vs/
+
+bin/
+
+obj/
+
+Properties/
+
+RustDedicated_Data/
