@@ -26,6 +26,12 @@ namespace Oxide.Plugins
         void Init()
         {
             //AddCovalenceCommand(PatreonCommandTextMatch, nameof(PatreonCommand));
+            Puts("Debug Init");
+        }
+
+        void OnServerInitialized(bool serverInitialized)
+        {
+            Puts("Debug OnServerInitialized");
         }
 
         //#region Commands
@@ -33,6 +39,7 @@ namespace Oxide.Plugins
         public void PatreonCommand(IPlayer player, string command, string[] args)
         {
             //if (args.Length < 1)
+            Puts("Debug PatreonCommand");
 
             if (String.Equals(args[0].ToLower(), "claim"))
             {
