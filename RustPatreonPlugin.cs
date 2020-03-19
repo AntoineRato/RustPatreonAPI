@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace Oxide.Plugins
 
         void Init()
         {
-            //AddCovalenceCommand(PatreonCommandTextMatch, nameof(PatreonCommand));
+            AddCovalenceCommand("patreon", nameof(PatreonCommand));
             Puts("Debug Init");
         }
 
@@ -34,9 +34,7 @@ namespace Oxide.Plugins
             Puts("Debug OnServerInitialized");
         }
 
-        //#region Commands
-        [Command("patreon")]
-        public void PatreonCommand(IPlayer player, string command, string[] args)
+        private void PatreonCommand(IPlayer player, string command, string[] args)
         {
             //if (args.Length < 1)
             Puts("Debug PatreonCommand");
