@@ -13,8 +13,8 @@ namespace Oxide.Plugins
 
     class RustPatreonPlugin : CovalencePlugin
     {
-        //[JsonProperty(PropertyName = "Patreon Command", ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        //public string[] PatreonCommandTextMatch = { "patreon" };
+        [JsonProperty(PropertyName = "Patreon Command", ObjectCreationHandling = ObjectCreationHandling.Replace)]
+        public string[] PatreonCommandTextMatch = { "patreon", "patr" };
 
         class PatreonSupporter
         {
@@ -25,7 +25,7 @@ namespace Oxide.Plugins
 
         void Init()
         {
-            AddCovalenceCommand("patreon", nameof(PatreonCommand));
+            AddCovalenceCommand(PatreonCommandTextMatch, nameof(PatreonCommand));
             Puts("Debug Init");
         }
 
@@ -34,7 +34,7 @@ namespace Oxide.Plugins
             Puts("Debug OnServerInitialized");
         }
 
-        public void PatreonCommand(IPlayer player, string command, string[] args)
+        private void PatreonCommand(IPlayer player, string command, string[] args)
         {
             //if (args.Length < 1)
             Puts("Debug PatreonCommand");
