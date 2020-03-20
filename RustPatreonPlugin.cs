@@ -25,6 +25,9 @@ namespace Oxide.Plugins
         private const string updatePermission = "patreonApi.update";
         private const string checkPermission = "patreonApi.check";
 
+        private bool pluginIsReady = false;
+        private bool pluginIsSaving = false;
+
         private readonly Dictionary<string, string> infoText = new Dictionary<string, string>
         {
             ["Permission"] = "Permission requiered"
@@ -60,6 +63,7 @@ namespace Oxide.Plugins
         #region methods
         void Init()
         {
+            pluginIsReady = false;
             AddCovalenceCommand(PatreonCommandTextMatch, nameof(PatreonCommand));
             permission.RegisterPermission(claimPermission, this);
             permission.RegisterPermission(unlinkPermission, this);
@@ -68,8 +72,9 @@ namespace Oxide.Plugins
             permission.RegisterPermission(checkPermission, this);
 
             patreonDataList = Interface.Oxide.DataFileSystem.ReadObject<PatreonData>(rustPatreonDataFile);
+            pluginIsReady = true;
 
-            Puts("Debug Init");
+            Puts("Plugin is ready");
         }
 
         void OnServerInitialized(bool serverInitialized)
@@ -81,7 +86,7 @@ namespace Oxide.Plugins
         {
             Puts("Debug PatreonCommand");
 
-            if (args.Length == 1)
+            if (args.Length == 1 && pluginIsReady)
             {
                 if (String.Equals(args[0].ToLower(), "claim"))
                 {
@@ -135,6 +140,15 @@ namespace Oxide.Plugins
             }
             else
                 player.Reply("Command incorrect, an option is requiered to use /" + command);
+        }
+
+        private void SavePatreonData()
+        {
+            Puts("Saving data to the file...");
+            pluginIsSaving = true;
+            Interface.Oxide.DataFileSystem.WriteObject(rustPatreonDataFile, patreonDataList);
+            pluginIsSaving = false;
+            Puts("Data saved");
         }
         #endregion
     }
