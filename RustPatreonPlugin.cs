@@ -13,8 +13,11 @@ namespace Oxide.Plugins
 
     class RustPatreonPlugin : CovalencePlugin
     {
+        #region variables
         [JsonProperty(PropertyName = "Patreon Command", ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public string[] PatreonCommandTextMatch = { "patreon", "patr" };
+
+        private const string rustPatreonDataFile = "RustPatreonDataFile";
 
         private const string claimPermission = "patreonApi.claim";
         private const string unlinkPermission = "patreonApi.unlink";
@@ -22,10 +25,12 @@ namespace Oxide.Plugins
         private const string updatePermission = "patreonApi.update";
         private const string checkPermission = "patreonApi.check";
 
-        private Dictionary<string, string> infoText = new Dictionary<string, string>
+        private readonly Dictionary<string, string> infoText = new Dictionary<string, string>
         {
             ["Permission"] = "Permission requiered"
         };
+
+        private PatreonData patreonDataList;
 
         /*#region Localization
         protected override void LoadDefaultMessages()
@@ -36,7 +41,23 @@ namespace Oxide.Plugins
             }, this);
         }
         #endregion Localization*/
+        #endregion
 
+        #region class
+        private class PatreonSupporter
+        {
+            public string patreonID { get; set; }
+            public string steamID { get; set; }
+            public string tier { get; set; }
+        }
+
+        private class PatreonData
+        {
+            public HashSet<PatreonSupporter> PatreonSupporterList = new HashSet<PatreonSupporter>();
+        }
+        #endregion
+
+        #region methods
         void Init()
         {
             AddCovalenceCommand(PatreonCommandTextMatch, nameof(PatreonCommand));
@@ -45,19 +66,12 @@ namespace Oxide.Plugins
             permission.RegisterPermission(linkPermission, this);
             permission.RegisterPermission(updatePermission, this);
             permission.RegisterPermission(checkPermission, this);
+
+            patreonDataList = Interface.Oxide.DataFileSystem.ReadObject<PatreonData>(rustPatreonDataFile);
+
             Puts("Debug Init");
         }
 
-        #region class
-        class PatreonSupporter
-        {
-            string patreonID;
-            string steamID;
-            string tier;
-        }
-        #endregion
-
-        #region methods
         void OnServerInitialized(bool serverInitialized)
         {
             Puts("Server Initialized");
@@ -67,7 +81,7 @@ namespace Oxide.Plugins
         {
             Puts("Debug PatreonCommand");
 
-            if (args.Length > 0)
+            if (args.Length == 1)
             {
                 if (String.Equals(args[0].ToLower(), "claim"))
                 {
