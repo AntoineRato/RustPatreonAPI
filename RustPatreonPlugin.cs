@@ -16,105 +16,112 @@ namespace Oxide.Plugins
         [JsonProperty(PropertyName = "Patreon Command", ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public string[] PatreonCommandTextMatch = { "patreon", "patr" };
 
+        private const string claimPermission = "patreonApi.claim";
+        private const string unlinkPermission = "patreonApi.unlink";
+        private const string linkPermission = "patreonApi.link";
+        private const string updatePermission = "patreonApi.update";
+        private const string checkPermission = "patreonApi.check";
+
+        private Dictionary<string, string> infoText = new Dictionary<string, string>
+        {
+            ["Permission"] = "Permission requiered"
+        };
+
+        /*#region Localization
+        protected override void LoadDefaultMessages()
+        {
+            lang.RegisterMessages(new Dictionary<string, string>
+            {
+                ["Permission"] = "Permission requiered"
+            }, this);
+        }
+        #endregion Localization*/
+
+        void Init()
+        {
+            AddCovalenceCommand(PatreonCommandTextMatch, nameof(PatreonCommand));
+            permission.RegisterPermission(claimPermission, this);
+            permission.RegisterPermission(unlinkPermission, this);
+            permission.RegisterPermission(linkPermission, this);
+            permission.RegisterPermission(updatePermission, this);
+            permission.RegisterPermission(checkPermission, this);
+            Puts("Debug Init");
+        }
+
+        #region class
         class PatreonSupporter
         {
             string patreonID;
             string steamID;
             string tier;
         }
+        #endregion
 
-        void Init()
-        {
-            AddCovalenceCommand(PatreonCommandTextMatch, nameof(PatreonCommand));
-            Puts("Debug Init");
-        }
-
+        #region methods
         void OnServerInitialized(bool serverInitialized)
         {
-            Puts("Debug OnServerInitialized");
+            Puts("Server Initialized");
         }
 
         private void PatreonCommand(IPlayer player, string command, string[] args)
         {
-            //if (args.Length < 1)
             Puts("Debug PatreonCommand");
 
-            if (String.Equals(args[0].ToLower(), "claim"))
+            if (args.Length > 0)
             {
-                Puts("Command send : " + command);
-                Puts("Arguments : " + args[0].ToLower());
-                Puts("Command recognized : claim");
-
-                player.Reply("Command send : " + command);
-                player.Reply("Arguments : " + args[0].ToLower());
-                player.Reply("Command recognized : claim");
-
-                player.Message("Message : \nCommand send : " + command);
-                player.Message("Arguments : " + args[0].ToLower());
-                player.Message("Command recognized : claim");
-            }
-            else if (String.Equals(args[0].ToLower(), "unlink"))
-            {
-                Puts("Command send : " + command);
-                Puts("Arguments : " + args[0].ToLower());
-                Puts("Command recognized : unlink");
-
-                player.Reply("Command send : " + command);
-                player.Reply("Arguments : " + args[0].ToLower());
-                player.Reply("Command recognized : unlink");
-
-                player.Message("Message : \nCommand send : " + command);
-                player.Message("Arguments : " + args[0].ToLower());
-                player.Message("Command recognized : unlink");
-            }
-            else if (String.Equals(args[0].ToLower(), "link"))
-            {
-                Puts("Command send : " + command);
-                Puts("Arguments : " + args[0].ToLower());
-                Puts("Command recognized : link");
-
-                player.Reply("Command send : " + command);
-                player.Reply("Arguments : " + args[0].ToLower());
-                player.Reply("Command recognized : link");
-
-                player.Message("Message : \nCommand send : " + command);
-                player.Message("Arguments : " + args[0].ToLower());
-                player.Message("Command recognized : link");
-            }
-            else if (String.Equals(args[0].ToLower(), "update"))
-            {
-                Puts("Command send : " + command);
-                Puts("Arguments : " + args[0].ToLower());
-                Puts("Command recognized : update");
-
-                player.Reply("Command send : " + command);
-                player.Reply("Arguments : " + args[0].ToLower());
-                player.Reply("Command recognized : update");
-
-                player.Message("Message : \nCommand send : " + command);
-                player.Message("Arguments : " + args[0].ToLower());
-                player.Message("Command recognized : update");
-            }
-            else if (String.Equals(args[0].ToLower(), "check"))
-            {
-                Puts("Command send : " + command);
-                Puts("Arguments : " + args[0].ToLower());
-                Puts("Command recognized : check");
-
-                player.Reply("Command send : " + command);
-                player.Reply("Arguments : " + args[0].ToLower());
-                player.Reply("Command recognized : check");
-
-                player.Message("Message : \nCommand send : " + command);
-                player.Message("Arguments : " + args[0].ToLower());
-                player.Message("Command recognized : check");
+                if (String.Equals(args[0].ToLower(), "claim"))
+                {
+                    if (player.HasPermission(claimPermission))
+                    {
+                        player.Reply("Successfully claimed");
+                    }
+                    else
+                        player.Reply(infoText["Permission"]);
+                }
+                else if (String.Equals(args[0].ToLower(), "unlink"))
+                {
+                    if (player.HasPermission(unlinkPermission))
+                    {
+                        player.Reply("Successfully unlinked");
+                    }
+                    else
+                        player.Reply(infoText["Permission"]);
+                }
+                else if (String.Equals(args[0].ToLower(), "link"))
+                {
+                    if (player.HasPermission(linkPermission))
+                    {
+                        player.Reply("Successfully linked");
+                    }
+                    else
+                        player.Reply(infoText["Permission"]);
+                }
+                else if (String.Equals(args[0].ToLower(), "update"))
+                {
+                    if (player.HasPermission(updatePermission))
+                    {
+                        player.Reply("Successfully updated");
+                    }
+                    else
+                        player.Reply(infoText["Permission"]);
+                }
+                else if (String.Equals(args[0].ToLower(), "check"))
+                {
+                    if (player.HasPermission(checkPermission))
+                    {
+                        player.Reply("Successfully checked");
+                    }
+                    else
+                        player.Reply("Permission requiered");
+                }
+                else
+                {
+                    player.Reply("Unrecognized command, please retry.");
+                }
             }
             else
-            {
-                Puts("Unrecognized command, please retry.");
-                player.Reply("Unrecognized command, please retry.");
-                player.Message("Message : \nUnrecognized command, please retry.");
-            }
+                player.Reply("Command incorrect, an option is requiered to use /" + command);
         }
+        #endregion
     }
 }
