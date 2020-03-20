@@ -85,6 +85,7 @@ namespace Oxide.Plugins
         private void PatreonCommand(IPlayer player, string command, string[] args)
         {
             Puts("Debug PatreonCommand");
+            bool needToSave = false;
 
             if (args.Length == 1 && pluginIsReady)
             {
@@ -93,6 +94,7 @@ namespace Oxide.Plugins
                     if (player.HasPermission(claimPermission))
                     {
                         player.Reply("Successfully claimed");
+                        needToSave = true;
                     }
                     else
                         player.Reply(infoText["Permission"]);
@@ -102,6 +104,7 @@ namespace Oxide.Plugins
                     if (player.HasPermission(unlinkPermission))
                     {
                         player.Reply("Successfully unlinked");
+                        needToSave = true;
                     }
                     else
                         player.Reply(infoText["Permission"]);
@@ -111,6 +114,7 @@ namespace Oxide.Plugins
                     if (player.HasPermission(linkPermission))
                     {
                         player.Reply("Successfully linked");
+                        needToSave = true;
                     }
                     else
                         player.Reply(infoText["Permission"]);
@@ -120,6 +124,7 @@ namespace Oxide.Plugins
                     if (player.HasPermission(updatePermission))
                     {
                         player.Reply("Successfully updated");
+                        needToSave = true;
                     }
                     else
                         player.Reply(infoText["Permission"]);
@@ -129,6 +134,7 @@ namespace Oxide.Plugins
                     if (player.HasPermission(checkPermission))
                     {
                         player.Reply("Successfully checked");
+                        needToSave = true;
                     }
                     else
                         player.Reply("Permission requiered");
@@ -140,6 +146,10 @@ namespace Oxide.Plugins
             }
             else
                 player.Reply("Command incorrect, an option is requiered to use /" + command);
+
+            //Save if a change has been made
+            if (needToSave)
+                SavePatreonData();
         }
 
         private void SavePatreonData()
